@@ -63,11 +63,13 @@ tuning:
   fixed_peft_params:
     q_lora: false
 
-  # TRL>=0.27 regressed SFTTrainer.log() from `logs.update(metrics)` to
-  # `logs = {**logs, **metrics}`, so the metrics no longer flow back through
-  # Trainer.evaluate()'s returned dict (only into external loggers). Restore
-  # eval_mean_token_accuracy once the TRL fix lands. See trl@4cb07d36.
-  evaluation_metrics: [ "eval_loss" ]
-  evaluation_direction: [ "minimize" ]
+  # Temporary: dropped eval_mean_token_accuracy until the downstream TRL bug
+  # with metric reporting is fixed. TRL>=0.27 regressed SFTTrainer.log() from
+  # `logs.update(metrics)` to `logs = {**logs, **metrics}`, so the metrics no
+  # longer flow back through Trainer.evaluate()'s returned dict (only into
+  # external loggers). Restore eval_mean_token_accuracy once the TRL fix lands.
+  # See trl@4cb07d36 and OPE-1846.
+  evaluation_metrics: ["eval_loss"]
+  evaluation_direction: ["minimize"]
   tuner_type: OPTUNA
   tuner_sampler: "RandomSampler"
